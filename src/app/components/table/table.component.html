@@ -1,1 +1,36 @@
-<p>table works!</p>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (item of items() | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems:
+        totalCount() }; track $index) {
+        <tr>
+            <td>{{$index + 1}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.price | currency}}</td>
+            <td>{{item.description}}</td>
+            <td>
+                <app-button text="Edit" (action)="editItem.emit(item)" class="btn-primary">
+                    <span icon><i class="fa fa-edit"></i></span>
+                </app-button>
+                <app-button text="Delete" (action)="deleteItem.emit(item)" class="btn-danger" />
+            </td>
+        </tr>
+        }
+        @if (items().length === 0) {
+        <tr>
+            <td colspan="5">
+                <h5>No Data available</h5>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>

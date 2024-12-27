@@ -1,1 +1,4 @@
-<p>button works!</p>
+<button [ngClass]="class" class="btn" (click)="handleClick()">
+    {{ text }}
+    <ng-content select="[icon]"></ng-content>
+</button>

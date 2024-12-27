@@ -1,27 +1,26 @@
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (item of items(); track $index) {
-        <tr>
-            <td>{{$index + 1}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.price | currency}}</td>
-            <td>{{item.description}}</td>
-        </tr>
-        }
-        @if (items().length === 0) {
-        <tr>
-            <td colspan="5">
-                <h5>No Data available</h5>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+<app-table 
+    [items]="items" 
+    [totalCount]="totalCount" 
+    [itemsPerPage]="itemsPerPage"
+    [currentPage]="currentPage"
+    (pageNumber)="onPageChange($event)"
+    (editItem)="onEditItem($event)"
+    (deleteItem)="onDeleteItem($event)">
+</app-table>
+
+<div style="margin: 10px">
+    <form [formGroup]="itemForm" (ngSubmit)="submitData()">
+        <div class="margin-b-10">
+            <input type="text" placeholder="Enter item name" formControlName="name" />
+        </div>
+        <br>
+        <div class="margin-b-10">
+            <input type="number" min="0" placeholder="Enter product price" formControlName="price" />
+        </div>
+        <br>
+        <div class="margin-b-10">
+            <textarea placeholder="Enter product description" formControlName="description"></textarea>
+        </div>
+        <button type="submit" class="btn btn-md btn-success" [disabled]="itemForm.invalid">Submit</button>
+    </form>
+</div>

@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Item } from '../../models';
-import { Subject, takeUntil } from 'rxjs';
-import { ItemService } from '../../services';
+import { ItemService } from '../../services/item.service';
+import { Item } from '../../models/item.model';
 import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
+import { TableComponent } from '../table/table.component';
 
 @Component({
   selector: 'app-home',
@@ -12,25 +13,30 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    TableComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
+
   itemForm!: FormGroup;
-  editMode: boolean = false;
   items = signal<Item[]>([]);
   totalCount = signal<number>(0);
   currentPage: number = 1;
   itemsPerPage: number = 5;
-  itemId!: number;
+
+  editMode: boolean = false;
+  itemId: any;
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
     private itemService: ItemService,
-  ) { this.formInitializer(); }
+  ) {
+    this.formInitializer();
+  }
 
   ngOnInit(): void {
     this.fetchData();
@@ -39,6 +45,64 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+
+  onEditItem(item: Item): void {
+    this.editMode = true;
+    this.itemId = item.id;
+    this.itemForm.patchValue({ ...item });
+  }
+
+  onDeleteItem(item: Item): void {
+    const confirmation = confirm("Are you sure you want to delete this item?");
+    if (confirmation) {
+      this.itemService.deleteItem(item.id).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(() => {
+        this.fetchData();
+      });
+    }
+  }
+
+  submitData(): void {
+    if (this.itemForm.invalid) return;
+    if (this.editMode && this.itemId) {
+      this.editItem();
+    } else {
+      this.createItem();
+    }
+  }
+
+  onPageChange($event: any): void {
+    this.currentPage = $event;
+    this.resetItemForm();
+    this.fetchData();
+  }
+
+  onCreateButtonClick(): void {
+    console.log("on create button clicked..")
+  }
+
+  private editItem(): void {
+    this.itemService.updateItem(this.itemId, this.itemForm.getRawValue()).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.fetchData();
+      this.resetItemForm();
+      this.editMode = false;
+      this.itemId = '';
+    });
+  }
+
+  private createItem(): void {
+    const newItem: Item = this.itemForm.value;
+    this.itemService.createItem(newItem).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.resetItemForm();
+      this.fetchData();
+    });
   }
 
   private fetchData(): void {
@@ -57,5 +121,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       price: ['', [Validators.required, Validators.min(1), Validators.max(1000)]],
       description: [''],
     });
+  }
+
+  private resetItemForm(): void{
+    this.itemForm.reset();
   }
 }

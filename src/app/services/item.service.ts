@@ -45,7 +45,6 @@ export class ItemService {
         return this.httpClient.delete<void>(`${this.API_URL}/${id}`);
     }
 
-
     triggerRequest() {
         return this.httpClient.get('https://api.example.com/data');
     }
