@@ -1,1 +1,28 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background: whitesmoke;
+}
+
+a,
+button {
+    cursor: pointer;
+}
+
+input.ng-touched.ng-invalid,
+textarea.ng-touched.ng-invalid {
+    border: 1px solid red;
+}
+
+.invalid {
+    border: 1px solid red;
+}
+
+.invalid+.error-message {
+    color: red;
+    font-size: 0.8rem;
+}

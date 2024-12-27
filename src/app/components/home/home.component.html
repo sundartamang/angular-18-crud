@@ -1,0 +1,27 @@
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (item of items(); track $index) {
+        <tr>
+            <td>{{$index + 1}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.price | currency}}</td>
+            <td>{{item.description}}</td>
+        </tr>
+        }
+        @if (items().length === 0) {
+        <tr>
+            <td colspan="5">
+                <h5>No Data available</h5>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
