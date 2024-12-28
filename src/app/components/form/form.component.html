@@ -1,0 +1,26 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-5 max-w-md w-full relative">
+        <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 focus:outline-none" (click)="closeModal()">
+            ✕
+        </button>
+        <h2 class="text-xl font-semibold mb-4">{{ data.title }}</h2>
+        <form [formGroup]="itemForm" (ngSubmit)="submitData()" class="m-4">
+            <div class="mb-4">
+                <input type="text"
+                    class="w-full bg-transparent text-sm border rounded-md px-3 py-2 focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                    placeholder="Enter item name" formControlName="name" />
+            </div>
+            <div class="mb-4">
+                <input type="number"
+                    class="w-full bg-transparent text-sm border rounded-md px-3 py-2 focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                    min="0" placeholder="Enter product price" formControlName="price" />
+            </div>
+            <div class="mb-4">
+                <textarea rows="4"
+                    class="w-full bg-transparent text-sm border rounded-md px-3 py-2 focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                    placeholder="Enter product description" formControlName="description"></textarea>
+            </div>
+            <app-button text="Submit"></app-button>
+        </form>
+    </div>
+</div>

@@ -1,36 +1,38 @@
-<table>
+<table class="table-auto w-full">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Description</th>
-            <th>Action</th>
+            <th class="p-4 text-sm border-b border-blue-gray-100 bg-blue-gray-50 text-left">ID</th>
+            <th class="p-4 text-sm border-b border-blue-gray-100 bg-blue-gray-50 text-left">Name</th>
+            <th class="p-4 text-sm border-b border-blue-gray-100 bg-blue-gray-50 text-left">Price</th>
+            <th class="p-4 text-sm border-b border-blue-gray-100 bg-blue-gray-50 text-left">Description</th>
+            <th class="p-4 text-sm border-b border-blue-gray-100 bg-blue-gray-50 text-left">Action</th>
         </tr>
     </thead>
     <tbody>
         @for (item of items() | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems:
         totalCount() }; track $index) {
         <tr>
-            <td>{{$index + 1}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.price | currency}}</td>
-            <td>{{item.description}}</td>
-            <td>
-                <app-button text="Edit" (action)="editItem.emit(item)" class="btn-primary">
+            <td class="p-4 text-sm border-b border-blue-gray-50">{{$index + 1}}</td>
+            <td class="p-4 text-sm border-b border-blue-gray-50">{{item.name}}</td>
+            <td class="p-4 text-sm border-b border-blue-gray-50">{{item.price | currency}}</td>
+            <td class="p-4 text-sm border-b border-blue-gray-50">{{item.description}}</td>
+            <td class="p-4 text-sm border-b border-blue-gray-50 flex w-max gap-2">
+                <app-button text="Edit" (action)="editItem.emit(item)" >
                     <span icon><i class="fa fa-edit"></i></span>
                 </app-button>
-                <app-button text="Delete" (action)="deleteItem.emit(item)" class="btn-danger" />
+                <app-button text="Delete" (action)="deleteItem.emit(item)" />
             </td>
         </tr>
         }
         @if (items().length === 0) {
         <tr>
-            <td colspan="5">
-                <h5>No Data available</h5>
+            <td colspan="5" class="p-4 text-center">
+                <span class="text-sm">No Data available</span>
             </td>
         </tr>
         }
     </tbody>
 </table>
-<pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+<div class="p-5 w-full flex justify-center">
+    <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+</div>

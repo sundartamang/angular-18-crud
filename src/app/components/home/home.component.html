@@ -1,26 +1,15 @@
-<app-table 
-    [items]="items" 
-    [totalCount]="totalCount" 
-    [itemsPerPage]="itemsPerPage"
-    [currentPage]="currentPage"
-    (pageNumber)="onPageChange($event)"
-    (editItem)="onEditItem($event)"
-    (deleteItem)="onDeleteItem($event)">
-</app-table>
 
-<div style="margin: 10px">
-    <form [formGroup]="itemForm" (ngSubmit)="submitData()">
-        <div class="margin-b-10">
-            <input type="text" placeholder="Enter item name" formControlName="name" />
-        </div>
-        <br>
-        <div class="margin-b-10">
-            <input type="number" min="0" placeholder="Enter product price" formControlName="price" />
-        </div>
-        <br>
-        <div class="margin-b-10">
-            <textarea placeholder="Enter product description" formControlName="description"></textarea>
-        </div>
-        <button type="submit" class="btn btn-md btn-success" [disabled]="itemForm.invalid">Submit</button>
-    </form>
+<div class="main-container p-5 shadow-md">
+    <app-button text="Create" class="bg-blue-700 text-white" (action)="onCreateButtonClick()"></app-button>
+    <app-table 
+        [items]="items" 
+        [totalCount]="totalCount" 
+        [itemsPerPage]="itemsPerPage"
+        [currentPage]="currentPage"
+        (pageNumber)="onPageChange($event)"
+        (editItem)="onEditItem($event)"
+        (deleteItem)="onDeleteItem($event)">
+    </app-table>
 </div>
+
+
