@@ -1,12 +1,15 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { catchError, retry, throwError } from 'rxjs';
+import { inject } from '@angular/core';
 import { HttpStatusCode } from '../models';
+import { NotificationService } from '../services';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+    const notificationService = inject(NotificationService);
     return next(req).pipe(
         retry(3),
         catchError((error: HttpErrorResponse) => {
-            let errorMessage = 'An unexpected error occurred!';
+            let errorMessage: string = 'An unexpected error occurred!';
 
             switch (error.status) {
                 case HttpStatusCode.Forbidden:
@@ -28,10 +31,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
                     errorMessage = `Error: ${error.statusText || 'Unknown error'}`;
                     break;
             }
-
-            console.warn(errorMessage);
+            notificationService.showNotification(errorMessage, true);
             return throwError(() => new Error(errorMessage));
         })
     );
 };
-

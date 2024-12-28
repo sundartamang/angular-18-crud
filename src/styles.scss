@@ -10,6 +10,7 @@
 body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
     background: whitesmoke;
+    letter-spacing: 0.5px !important;
 }
 
 a,
@@ -29,4 +30,8 @@ textarea.ng-touched.ng-invalid {
 .invalid+.error-message {
     color: red;
     font-size: 0.8rem;
+}
+
+button[disabled] {
+    opacity: 0.5;
 }

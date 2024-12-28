@@ -8,6 +8,7 @@ import { TableComponent } from '../table/table.component';
 import { ButtonComponent } from "../button/button.component";
 import { Dialog } from '@angular/cdk/dialog';
 import { FormComponent } from '../form/form.component';
+import { NotificationService } from '../../services';
 
 @Component({
   selector: 'app-home',
@@ -27,14 +28,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   items = signal<Item[]>([]);
   totalCount = signal<number>(0);
   currentPage: number = 1;
-  itemsPerPage: number = 5;
+  itemsPerPage: number = 10;
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
     private itemService: ItemService,
-    private dialog: Dialog
+    private dialog: Dialog,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +55,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       ).subscribe(() => {
         this.fetchData();
+        this.notificationService.showNotification('Item deleted successfully !', false);
       });
     }
   }
@@ -64,7 +67,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onCreateButtonClick(): void {
     this.dialog.open(FormComponent, {
-      width: '500px',
       data: {
         title: 'Create Item',
       }
@@ -78,7 +80,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   onEditItem(item: Item): void {
     const itemId = item.id;
     this.dialog.open(FormComponent, {
-      width: '500px',
       data: {
         title: 'Edit Item',
         item: item
@@ -95,6 +96,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.fetchData();
+      this.notificationService.showNotification('Item updated successfully !', false);
     });
   }
 
@@ -102,6 +104,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.itemService.createItem(item).pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
+      this.notificationService.showNotification('Item created successfully !', false);
       this.fetchData();
     });
   }

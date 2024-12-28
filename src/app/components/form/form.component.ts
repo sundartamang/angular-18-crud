@@ -24,12 +24,14 @@ type DIALOG_DATA = {
 })
 export class FormComponent {
   itemForm!: FormGroup;
+  editMode: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: DialogRef<FormComponent>,
     @Inject(DIALOG_DATA) public data: DIALOG_DATA
   ) {
+    this.editMode = !!this.data.item; 
     this.formInitializer();
     if (this.data.item) {
       this.patchFormValue();

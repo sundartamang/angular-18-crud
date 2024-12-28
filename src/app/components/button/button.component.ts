@@ -5,12 +5,18 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   selector: 'app-button',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './button.component.html',
-  styleUrl: './button.component.scss'
+  template: `
+    <button type="submit" [disabled]="shouldDisable " [ngClass]="className"
+        class="py-2 px-4 border focus:outline-none rounded-md" (click)="handleClick()">
+        <ng-content select="[icon]"></ng-content>
+        {{ text }}
+    </button>
+  `,
 })
 export class ButtonComponent {
   @Input() text!: string;
-  @Input() class!: string;
+  @Input() className!: string;
+  @Input() shouldDisable: boolean = false;
   @Output() action = new EventEmitter<void>();
 
   handleClick(): void {
