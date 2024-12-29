@@ -12,11 +12,10 @@ import { Subject, takeUntil } from 'rxjs';
     <app-loader />
     <router-outlet />
     <app-notification 
-    [showNotification]="showNotification" 
-    [message]="message" 
-    [isError]="isError"
-    (close)="showNotification = false">
-    </app-notification>
+      [showNotification]="showNotification" 
+      [message]="message" 
+      [isError]="isError"
+      (close)="showNotification = false" />
   `,
 })
 export class AppComponent implements OnDestroy {
@@ -52,7 +51,6 @@ export class AppComponent implements OnDestroy {
   private hideNotification(): void {
     setTimeout(() => {
       this.showNotification = false;
-    }, 10000)
+    }, 5000)
   }
-
 }

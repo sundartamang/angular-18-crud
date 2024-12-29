@@ -1,9 +1,9 @@
 <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-lg max-w-md w-full relative">
-        <div class="p-5 flex justify-between bg-gray-200 rounded-t-lg border-b border-blue-gray-100">
-            <p class="text-lg font-semibold">{{ data.title }}</p>
+    <div class="bg-white shadow-lg max-w-md w-full relative">
+        <div class="p-5 flex justify-between bg-primary-dark  border-b border-blue-gray-100">
+            <p class="text-white">{{ data.title }}</p>
             <a (click)="closeModal()">
-                <span icon><i class="fa-solid fa-xmark"></i></span>
+                <span icon><i class="fa-solid fa-xmark text-white"></i></span>
             </a>
         </div>
         <div class="p-5">
@@ -23,7 +23,7 @@
                         class="w-full bg-transparent text-sm border rounded-md px-3 py-2 focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                         placeholder="Enter product description" formControlName="description"></textarea>
                 </div>
-                <app-button [text]="editMode ? 'Update' : 'Submit'" [shouldDisable]="itemForm.invalid" className="bg-primary-green text-white" />
+                <app-button [text]="editMode ? 'Update' : 'Submit'" [shouldDisable]="itemForm.invalid" className="bg-primary-green text-white text-sm border border-border-light" />
             </form>
         </div>
     </div>

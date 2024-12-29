@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ItemService } from '../../services/item.service';
 import { Item } from '../../models/item.model';
 import { CommonModule } from '@angular/common';
@@ -9,14 +8,13 @@ import { ButtonComponent } from "../button/button.component";
 import { Dialog } from '@angular/cdk/dialog';
 import { FormComponent } from '../form/form.component';
 import { NotificationService } from '../../services';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
     TableComponent,
     ButtonComponent
   ],
@@ -33,7 +31,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private fb: FormBuilder,
     private itemService: ItemService,
     private dialog: Dialog,
     private notificationService: NotificationService
@@ -49,20 +46,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onDeleteItem(item: Item): void {
-    const confirmation = confirm("Are you sure you want to delete this item?");
-    if (confirmation) {
-      this.itemService.deleteItem(item.id).pipe(
-        takeUntil(this.destroy$)
-      ).subscribe(() => {
-        this.fetchData();
-        this.notificationService.showNotification('Item deleted successfully !', false);
-      });
-    }
-  }
-
-  onPageChange($event: any): void {
-    this.currentPage = $event;
-    this.fetchData();
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Please confirm',
+        message: 'Are you sure you want to delete this item?'
+      }
+    }).closed.subscribe((yes) => {
+      if (yes) { this.deleteItem(item) }
+    })
   }
 
   onCreateButtonClick(): void {
@@ -89,6 +80,20 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.editItem(itemId, data);
       }
     })
+  }
+
+  onPageChange($event: any): void {
+    this.currentPage = $event;
+    this.fetchData();
+  }
+
+  private deleteItem(item: Item): void {
+    this.itemService.deleteItem(item.id).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.fetchData();
+      this.notificationService.showNotification('Item deleted successfully !', false);
+    });
   }
 
   private editItem(itemId: any, item: Item): void {

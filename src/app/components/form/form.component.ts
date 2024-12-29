@@ -5,7 +5,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ButtonComponent } from '../button/button.component';
 import { Item } from '../../models';
 
-type DIALOG_DATA = {
+type DialogData = {
   title: string,
   item?: Item
 }
@@ -29,9 +29,9 @@ export class FormComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: DialogRef<FormComponent>,
-    @Inject(DIALOG_DATA) public data: DIALOG_DATA
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {
-    this.editMode = !!this.data.item; 
+    this.editMode = !!this.data.item;
     this.formInitializer();
     if (this.data.item) {
       this.patchFormValue();
