@@ -38,6 +38,17 @@ export class FormComponent {
     }
   }
 
+  getErrorMessage(fieldName: string): string {
+    const field = this.itemForm.get(fieldName);
+    if (!field || !field.errors) return '';
+    if (field.errors['required']) return `${fieldName} is required.`;
+    if (field.errors['minlength']) return `${fieldName} must be at least ${field.errors['minlength'].requiredLength} characters.`;
+    if (field.errors['maxlength']) return `${fieldName} cannot exceed ${field.errors['maxlength'].requiredLength} characters.`;
+    if (field.errors['min']) return `${fieldName} must be greater than or equal to ${field.errors['min'].min}.`;
+    if (field.errors['max']) return `${fieldName} must be less than or equal to ${field.errors['max'].max}.`;
+    return 'Invalid input.';
+  }
+  
   submitData(): void {
     const data = this.itemForm.getRawValue();
     this.dialogRef.close(data);
