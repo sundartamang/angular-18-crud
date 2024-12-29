@@ -1,4 +1,4 @@
-# MyAngularProject
+# Angular 18 CRUD
 
 - **Node version**: 20 
 - **Angular version**: 18.2.1.
