@@ -1,14 +1,15 @@
 <div class="main-container flex flex-col mt-20 mb-20 p-5 shadow-md max-w-full sm:max-w-[700px] xl:mx-auto lg:mx-auto md:mx-auto sm:mx-4 bg-white h-[calc(100vh-160px)]">
 
-    <div class="bg-white z-10 border-b border-blue-gray-50 pb-4" >
-        <app-button text="Create item" className="bg-primary-blue text-white" (action)="onCreateButtonClick()">
+    <div class="bg-white z-10 border-b border-blue-gray-50 pb-4 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 sm:justify-between">
+        <app-button text="Create item" className="bg-primary-blue text-white" (action)="openCreateItemDialog()">
             <span icon><i class="fa-solid fa-circle-plus"></i></span>
         </app-button>
+        <app-search (searchTextChanged)="handleSearchTermChange($event)"></app-search>
     </div>
 
     <div class="flex-1 overflow-auto">
         <app-table [items]="items" [totalCount]="totalCount" [itemsPerPage]="itemsPerPage" [currentPage]="currentPage"
-            (pageNumber)="onPageChange($event)" (editItem)="onEditItem($event)" (deleteItem)="onDeleteItem($event)">
+            (pageNumber)="handlePageChange($event)" (editItem)="openEditItemDialog($event)" (deleteItem)="confirmAndDeleteItem($event)">
         </app-table>
     </div>
 </div>

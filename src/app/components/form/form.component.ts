@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ButtonComponent } from '../button/button.component';
 import { Item } from '../../models';
+import { FormValidationService } from '../../services';
 
 type DialogData = {
   title: string,
@@ -29,7 +30,7 @@ export class FormComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: DialogRef<FormComponent>,
-    @Inject(DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData,
   ) {
     this.editMode = !!this.data.item;
     this.formInitializer();
@@ -39,14 +40,7 @@ export class FormComponent {
   }
 
   getErrorMessage(fieldName: string): string {
-    const field = this.itemForm.get(fieldName);
-    if (!field || !field.errors) return '';
-    if (field.errors['required']) return `${fieldName} is required.`;
-    if (field.errors['minlength']) return `${fieldName} must be at least ${field.errors['minlength'].requiredLength} characters.`;
-    if (field.errors['maxlength']) return `${fieldName} cannot exceed ${field.errors['maxlength'].requiredLength} characters.`;
-    if (field.errors['min']) return `${fieldName} must be greater than or equal to ${field.errors['min'].min}.`;
-    if (field.errors['max']) return `${fieldName} must be less than or equal to ${field.errors['max'].max}.`;
-    return 'Invalid input.';
+    return FormValidationService.getErrorMessage(this.itemForm.get(fieldName)!, fieldName);
   }
   
   submitData(): void {

@@ -15,9 +15,11 @@
               placeholder="Enter item name"
               formControlName="name"
             />
-            <small class="text-red-500" *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
-              {{ getErrorMessage('name') }}
-            </small>
+            @if (itemForm.get('name')?.invalid && itemForm.get('name')?.touched) {              
+              <small class="text-red-500">
+                {{ getErrorMessage('name') }}
+              </small>
+            }
           </div>
           <div class="mb-4">
             <input
@@ -27,9 +29,11 @@
               placeholder="Enter product price"
               formControlName="price"
             />
-            <small class="text-red-500" *ngIf="itemForm.get('price')?.invalid && itemForm.get('price')?.touched">
-              {{ getErrorMessage('price') }}
-            </small>
+            @if (itemForm.get('price')?.invalid && itemForm.get('price')?.touched) {
+              <small class="text-red-500">
+                {{ getErrorMessage('price') }}
+              </small>
+            }
           </div>
           <div class="mb-4">
             <textarea
@@ -38,9 +42,11 @@
               placeholder="Enter product description"
               formControlName="description"
             ></textarea>
-            <small class="text-red-500" *ngIf="itemForm.get('description')?.invalid && itemForm.get('description')?.touched">
-              {{ getErrorMessage('description') }}
-            </small>
+            @if (itemForm.get('description')?.invalid && itemForm.get('description')?.touched) {
+              <small class="text-red-500">
+                {{ getErrorMessage('description') }}
+              </small>
+            }
           </div>
           <app-button
             [text]="editMode ? 'Update' : 'Submit'"

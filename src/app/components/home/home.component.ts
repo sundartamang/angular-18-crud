@@ -9,6 +9,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { FormComponent } from '../form/form.component';
 import { NotificationService } from '../../services';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,8 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
   imports: [
     CommonModule,
     TableComponent,
-    ButtonComponent
+    ButtonComponent,
+    SearchComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -27,6 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   totalCount = signal<number>(0);
   currentPage: number = 1;
   itemsPerPage: number = 10;
+  searchTerm: string = '';
 
   private destroy$ = new Subject<void>();
 
@@ -45,30 +48,28 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onDeleteItem(item: Item): void {
+  confirmAndDeleteItem(item: Item): void {
     this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Please confirm',
         message: 'Are you sure you want to delete this item?'
       }
     }).closed.subscribe((yes) => {
-      if (yes) { this.deleteItem(item) }
+      if (yes) { this.removeItemAndRefresh(item) }
     })
   }
 
-  onCreateButtonClick(): void {
+  openCreateItemDialog(): void {
     this.dialog.open(FormComponent, {
       data: {
         title: 'Create Item',
       }
     }).closed.subscribe((data: any) => {
-      if (data) {
-        this.createItem(data);
-      }
+      if (data) { this.addItemAndRefresh(data); }
     })
   }
 
-  onEditItem(item: Item): void {
+  openEditItemDialog(item: Item): void {
     const itemId = item.id;
     this.dialog.open(FormComponent, {
       data: {
@@ -76,51 +77,79 @@ export class HomeComponent implements OnInit, OnDestroy {
         item: item
       }
     }).closed.subscribe((data: any) => {
-      if (data) {
-        this.editItem(itemId, data);
-      }
+      if (data) { this.updateItemAndRefresh(itemId, data); }
     })
   }
 
-  onPageChange($event: any): void {
+  handlePageChange($event: any): void {
     this.currentPage = $event;
-    this.fetchData();
+    if (this.searchTerm) {
+      this.searchItem();
+    } else {
+      this.fetchData();
+    }
   }
 
-  private deleteItem(item: Item): void {
+  handleSearchTermChange($event: any): void {
+    if ($event) {
+      this.searchTerm = $event;
+      this.searchItem();
+    } else {
+      this.searchTerm = '';
+      this.fetchData();
+    }
+  }
+
+  private removeItemAndRefresh(item: Item): void {
     this.itemService.deleteItem(item.id).pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.fetchData();
-      this.notificationService.showNotification('Item deleted successfully !', false);
+      this.refreshItemsAfterAction('Item deleted successfully !');
     });
   }
 
-  private editItem(itemId: any, item: Item): void {
+  private updateItemAndRefresh(itemId: any, item: Item): void {
     this.itemService.updateItem(itemId, item).pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.fetchData();
-      this.notificationService.showNotification('Item updated successfully !', false);
+      this.refreshItemsAfterAction('Item updated successfully !');
     });
   }
 
-  private createItem(item: Item): void {
+  private addItemAndRefresh(item: Item): void {
     this.itemService.createItem(item).pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.notificationService.showNotification('Item created successfully !', false);
-      this.fetchData();
+      this.refreshItemsAfterAction('Item created successfully !');
     });
   }
 
+  private refreshItemsAfterAction(message: string): void {
+    this.fetchData();
+    this.notificationService.showNotification(message, false);
+  }
+
   private fetchData(): void {
-    const payload = { page: this.currentPage, limit: this.itemsPerPage };
+    const payload = this.getPaginationPayload();
     this.itemService.getAllItems(payload).pipe(
       takeUntil(this.destroy$)
     ).subscribe((data) => {
       this.items.set(data.items);
       this.totalCount.set(data.totalCount);
     });
+  }
+
+  private searchItem(): void {
+    const payload = this.getPaginationPayload();
+    this.itemService.searchItem(this.searchTerm, payload).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((data) => {
+      this.items.set(data.items);
+      this.totalCount.set(data.totalCount);
+    })
+  }
+
+  private getPaginationPayload(): { page: number; limit: number } {
+    return { page: this.currentPage, limit: this.itemsPerPage };
   }
 }
